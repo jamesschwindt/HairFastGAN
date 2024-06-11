@@ -87,6 +87,7 @@ class HairFast:
                 if img.startswith(('http://', 'https://')):
                     response = requests.get(img)
                     img = Image.open(BytesIO(response.content))
+                    img = F.to_tensor(img)
                 else:
                     path_img = img
                     if path_img not in path_to_images:
