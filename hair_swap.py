@@ -19,6 +19,9 @@ from utils.seed import seed_setter
 from utils.shape_predictor import align_face
 from utils.time import bench_session
 
+import requests
+from io import BytesIO
+
 TImage = tp.TypeVar('TImage', torch.Tensor, Image.Image, np.ndarray)
 TPath = tp.TypeVar('TPath', Path, str)
 TReturn = tp.TypeVar('TReturn', torch.Tensor, tuple[torch.Tensor, ...])
