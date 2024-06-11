@@ -63,13 +63,13 @@ class HairFast:
         final_image = self.blend.blend_images(align_shape, align_color, name_to_embed, **kwargs)
         return final_image
 
-    def swap(self, face_img: TImage | TPath, shape_img: TImage | TPath, color_img: TImage | TPath,
+    def swap(self, face_img: TImage | str, shape_img: TImage | str, color_img: TImage | str,
              benchmark=False, align=False, seed=None, exp_name=None, **kwargs) -> TReturn:
         """
         Run HairFast on the input images to transfer hair shape and color to the desired images.
-        :param face_img:  face image in Tensor, PIL Image, array or file path format
-        :param shape_img: shape image in Tensor, PIL Image, array or file path format
-        :param color_img: color image in Tensor, PIL Image, array or file path format
+        :param face_img:  face image in Tensor, PIL Image, array or URL format
+        :param shape_img: shape image in Tensor, PIL Image, array or URL format
+        :param color_img: color image in Tensor, PIL Image, array or URL format
         :param benchmark: starts counting the speed of the session
         :param align:     for arbitrary photos crops images to faces
         :param seed:      fixes seed for reproducibility, default 3407
@@ -77,17 +77,21 @@ class HairFast:
         :return:          returns the final image as a Tensor
         """
         images: list[torch.Tensor] = []
-        path_to_images: dict[TPath, torch.Tensor] = {}
+        path_to_images: dict[str, torch.Tensor] = {}
 
         for img in (face_img, shape_img, color_img):
             if isinstance(img, (torch.Tensor, Image.Image, np.ndarray)):
                 if not isinstance(img, torch.Tensor):
                     img = F.to_tensor(img)
-            elif isinstance(img, (Path, str)):
-                path_img = img
-                if path_img not in path_to_images:
-                    path_to_images[path_img] = read_image(str(path_img), mode=ImageReadMode.RGB)
-                img = path_to_images[path_img]
+            elif isinstance(img, str):
+                if img.startswith(('http://', 'https://')):
+                    response = requests.get(img)
+                    img = Image.open(BytesIO(response.content))
+                else:
+                    path_img = img
+                    if path_img not in path_to_images:
+                        path_to_images[path_img] = read_image(str(path_img), mode=ImageReadMode.RGB)
+                    img = path_to_images[path_img]
             else:
                 raise TypeError(f'Unsupported image format {type(img)}')
 
