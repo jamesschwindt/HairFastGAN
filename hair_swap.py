@@ -104,11 +104,11 @@ class HairFast:
             else:
                 raise TypeError(f'Unsupported image format {type(img)}')
 
-            img = resize_image(img)
+            # img = resize_image(img)
             images.append(img)
 
-        if align:
-            images = align_face(images)
+        # if align:
+        images = align_face(images)
             
          # Print shapes before passing to equal_replacer
         for i, img in enumerate(images):
