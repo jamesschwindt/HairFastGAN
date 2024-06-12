@@ -109,7 +109,16 @@ class HairFast:
 
         if align:
             images = align_face(images)
+            
+         # Print shapes before passing to equal_replacer
+        for i, img in enumerate(images):
+            print(f"Image {i} shape before equal_replacer: {img.shape}")
+            
         images = equal_replacer(images)
+
+        # Print shapes before passing to __swap_from_tensors
+        for i, img in enumerate(images):
+            print(f"Image {i} shape before __swap_from_tensors: {img.shape}")
 
         final_image = self.__swap_from_tensors(*images, seed=seed, benchmark=benchmark, exp_name=exp_name, **kwargs)
 
