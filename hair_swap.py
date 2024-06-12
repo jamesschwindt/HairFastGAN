@@ -30,7 +30,7 @@ TReturn = tp.TypeVar('TReturn', torch.Tensor, tuple[torch.Tensor, ...])
 def resize_image(img, size=(256, 256)):
     if isinstance(img, torch.Tensor):
         img = F.to_pil_image(img)
-    img = img.resize(size, Image.ANTIALIAS)
+    img = img.resize(size, Image.Resampling.LANCZOS)
     img = F.to_tensor(img)
     return img
 
