@@ -63,6 +63,13 @@ class HairFast:
         final_image = self.blend.blend_images(align_shape, align_color, name_to_embed, **kwargs)
         return final_image
 
+    def resize_image(img, size=(256, 256)):
+        if isinstance(img, torch.Tensor):
+            img = F.to_pil_image(img)
+        img = img.resize(size, Image.ANTIALIAS)
+        img = F.to_tensor(img)
+        return img
+    
     def swap(self, face_img: TImage | str, shape_img: TImage | str, color_img: TImage | str,
              benchmark=False, align=False, seed=None, exp_name=None, **kwargs) -> TReturn:
         """
@@ -96,6 +103,7 @@ class HairFast:
             else:
                 raise TypeError(f'Unsupported image format {type(img)}')
 
+            img = resize_image(img)
             images.append(img)
 
         if align:
